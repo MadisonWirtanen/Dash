@@ -1,6 +1,30 @@
 (() => {
   const config = window.DASH_CONFIG || { links: [] };
-  const links = Array.isArray(config.links) ? config.links : [];
+  const rawLinks = Array.isArray(config.links) ? config.links : [];
+
+  // Curated for harmonious card layouts: neighboring positions alternate
+  // between cool, warm, vivid, and calm hues instead of using randomness.
+  const AUTO_ACCENTS = [
+    '#4f46e5', // indigo
+    '#10b981', // emerald
+    '#f59e0b', // amber
+    '#ec4899', // pink
+    '#0ea5e9', // sky
+    '#8b5cf6', // violet
+    '#14b8a6', // teal
+    '#f97316', // orange
+    '#2563eb', // blue
+    '#e11d48', // rose
+    '#06b6d4', // cyan
+    '#84cc16'  // lime
+  ];
+
+  // Assign once from the original list order so filtering/searching never
+  // changes a card's color. A manually supplied accent always wins.
+  const links = rawLinks.map((item, index) => ({
+    ...item,
+    _accent: item.accent || AUTO_ACCENTS[index % AUTO_ACCENTS.length]
+  }));
   const $ = id => document.getElementById(id);
   const root = document.documentElement;
   const search = $('search-input');
@@ -45,7 +69,7 @@
     empty.hidden = list.length !== 0;
 
     grid.innerHTML = list.map(item => {
-      const accent = item.accent || '#2563eb';
+      const accent = item._accent;
       const icon = item.icon || (item.title ? item.title.slice(0, 2).toUpperCase() : '↗');
       const badge = item.badge ? `<span class="badge">${escapeHtml(item.badge)}</span>` : '';
       return `

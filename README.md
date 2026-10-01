@@ -10,6 +10,7 @@
 - 卡片式服务入口，桌面/平板/手机响应式
 - 分类自动生成、分类筛选、即时搜索
 - 深色/浅色主题，自动跟随系统并记住选择
+- 未设置 `accent` 时自动使用稳定、协调的卡片配色
 - 真实服务地址通过 Cloudflare Pages 环境变量维护
 - 构建阶段自动校验 JSON、必填字段和 URL
 - GitHub 仓库不保存真实链接
@@ -72,7 +73,6 @@ Settings
     "description": "主服务器管理面板",
     "category": "服务器",
     "icon": "1P",
-    "accent": "#2563eb",
     "badge": "常用"
   },
   {
@@ -80,8 +80,7 @@ Settings
     "url": "https://status.example.com",
     "description": "服务状态监控",
     "category": "监控",
-    "icon": "UK",
-    "accent": "#059669"
+    "icon": "UK"
   }
 ]
 ```
@@ -89,7 +88,7 @@ Settings
 单行写法与上面完全等价：
 
 ```text
-[{"title":"1Panel","url":"https://panel.example.com","description":"主服务器管理面板","category":"服务器","icon":"1P","accent":"#2563eb","badge":"常用"},{"title":"Uptime Kuma","url":"https://status.example.com","description":"服务状态监控","category":"监控","icon":"UK","accent":"#059669"}]
+[{"title":"1Panel","url":"https://panel.example.com","description":"主服务器管理面板","category":"服务器","icon":"1P","badge":"常用"},{"title":"Uptime Kuma","url":"https://status.example.com","description":"服务状态监控","category":"监控","icon":"UK"}]
 ```
 
 ### 字段说明
@@ -101,8 +100,32 @@ Settings
 | `description` | 否 | 卡片说明 |
 | `category` | 否 | 分类；页面自动生成分类按钮 |
 | `icon` | 否 | 1~3 个字符、中文或 Emoji |
-| `accent` | 否 | CSS 颜色，如 `#2563eb` |
+| `accent` | 否 | 手动指定 CSS 颜色；不填写时使用自动稳定配色 |
 | `badge` | 否 | 标题旁的小标签，如“常用” |
+
+### 自动稳定配色
+
+通常可以直接省略 `accent`。Dash 内置了一组经过搭配的颜色，并按 **DASH_LINKS 中的原始卡片顺序** 固定分配，使相邻卡片尽量在冷暖、色相上错开，整体排布更协调。
+
+自动配色具有以下特点：
+
+- **不是随机颜色**：刷新页面不会变化。
+- **与标题无关**：修改服务名称不会导致颜色变化。
+- **筛选和搜索不重新配色**：卡片在分类页或搜索结果中仍保持原来的颜色。
+- **顺序决定配色**：调整 `DASH_LINKS` 中卡片顺序后，自动颜色会按新布局重新分配。
+- **支持手动覆盖**：某张卡片需要固定品牌色时，单独填写 `accent` 即可。
+
+例如只给一张卡片固定颜色：
+
+```json
+[
+  {"title":"Server","url":"https://server.example.com"},
+  {"title":"Grafana","url":"https://grafana.example.com","accent":"#f97316"},
+  {"title":"API","url":"https://api.example.com"}
+]
+```
+
+其中 Server 和 API 使用自动配色，Grafana 始终使用你指定的 `#f97316`。
 
 最简配置：
 
