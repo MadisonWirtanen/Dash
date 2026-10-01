@@ -8,7 +8,7 @@
 
 - 纯 HTML + CSS + JavaScript，无前端框架、无数据库
 - 卡片式服务入口，桌面/平板/手机响应式
-- 分类自动生成、分类筛选、即时搜索
+- 分类自动生成、支持单分类/多分类、分类筛选、即时搜索
 - 深色/浅色主题，自动跟随系统并记住选择
 - 未设置 `accent` 时自动使用稳定、协调的卡片配色
 - 真实服务地址通过 Cloudflare Pages 环境变量维护
@@ -71,7 +71,7 @@ Settings
     "title": "1Panel",
     "url": "https://panel.example.com",
     "description": "主服务器管理面板",
-    "category": "服务器",
+    "category": ["本地", "服务器"],
     "icon": "1P",
     "badge": "常用"
   },
@@ -88,7 +88,7 @@ Settings
 单行写法与上面完全等价：
 
 ```text
-[{"title":"1Panel","url":"https://panel.example.com","description":"主服务器管理面板","category":"服务器","icon":"1P","badge":"常用"},{"title":"Uptime Kuma","url":"https://status.example.com","description":"服务状态监控","category":"监控","icon":"UK"}]
+[{"title":"1Panel","url":"https://panel.example.com","description":"主服务器管理面板","category":["本地","服务器"],"icon":"1P","badge":"常用"},{"title":"Uptime Kuma","url":"https://status.example.com","description":"服务状态监控","category":"监控","icon":"UK"}]
 ```
 
 ### 字段说明
@@ -98,10 +98,38 @@ Settings
 | `title` | 是 | 卡片名称 |
 | `url` | 是 | 完整 `http://` 或 `https://` 地址 |
 | `description` | 否 | 卡片说明 |
-| `category` | 否 | 分类；页面自动生成分类按钮 |
+| `category` | 否 | 单个分类字符串，或多个分类组成的字符串数组 |
 | `icon` | 否 | 1~3 个字符、中文或 Emoji |
 | `accent` | 否 | 手动指定 CSS 颜色；不填写时使用自动稳定配色 |
 | `badge` | 否 | 标题旁的小标签，如“常用” |
+
+### 单分类与多分类
+
+`category` 同时支持原来的单字符串写法和新的数组写法。
+
+单分类：
+
+```json
+{
+  "title": "Uptime Kuma",
+  "url": "https://status.example.com",
+  "category": "服务器"
+}
+```
+
+多分类：
+
+```json
+{
+  "title": "1Panel",
+  "url": "https://panel.example.com",
+  "category": ["本地", "服务器"]
+}
+```
+
+多分类卡片会同时出现在每一个对应分类的筛选结果中。上面的 1Panel 会同时出现在 `本地`、`服务器` 和 `全部` 中；搜索任一分类名称也能找到它。卡片底部会显示为 `本地 · 服务器`。
+
+数组中的重复分类和空字符串会被自动去除。已有的单分类配置无需修改。
 
 ### 自动稳定配色
 

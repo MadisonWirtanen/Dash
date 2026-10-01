@@ -48,11 +48,27 @@ function parseLinks() {
     }
 
     const normalized = { title, url };
-    for (const field of ['description', 'category', 'icon', 'accent', 'badge']) {
+
+    for (const field of ['description', 'icon', 'accent', 'badge']) {
       if (item[field] !== undefined && item[field] !== null && String(item[field]).trim()) {
         normalized[field] = String(item[field]).trim();
       }
     }
+
+    if (item.category !== undefined && item.category !== null) {
+      const isArray = Array.isArray(item.category);
+      const values = isArray ? item.category : [item.category];
+
+      if (values.some(value => typeof value !== 'string')) {
+        throw new Error(`DASH_LINKS[${index}].category 必须是字符串或字符串数组。`);
+      }
+
+      const categories = [...new Set(values.map(value => value.trim()).filter(Boolean))];
+      if (categories.length) {
+        normalized.category = isArray ? categories : categories[0];
+      }
+    }
+
     return normalized;
   });
 }

@@ -19,11 +19,22 @@
     '#84cc16'  // lime
   ];
 
-  // Assign once from the original list order so filtering/searching never
-  // changes a card's color. A manually supplied accent always wins.
+  const toCategoryList = value => {
+    const values = Array.isArray(value) ? value : [value];
+    return [...new Set(
+      values
+        .filter(item => typeof item === 'string')
+        .map(item => item.trim())
+        .filter(Boolean)
+    )];
+  };
+
+  // Assign derived values once from the original list so filtering/searching
+  // never changes a card's color or category membership.
   const links = rawLinks.map((item, index) => ({
     ...item,
-    _accent: item.accent || AUTO_ACCENTS[index % AUTO_ACCENTS.length]
+    _accent: item.accent || AUTO_ACCENTS[index % AUTO_ACCENTS.length],
+    _categories: toCategoryList(item.category)
   }));
   const $ = id => document.getElementById(id);
   const root = document.documentElement;
@@ -41,7 +52,7 @@
 
   let active = '全部';
   let keyword = '';
-  const categories = ['全部', ...new Set(links.map(x => x.category).filter(Boolean))];
+  const categories = ['全部', ...new Set(links.flatMap(item => item._categories))];
 
   const escapeHtml = (value = '') => String(value)
     .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -50,8 +61,8 @@
   function filteredLinks() {
     const q = keyword.toLowerCase();
     return links.filter(item => {
-      const inCategory = active === '全部' || item.category === active;
-      const text = [item.title, item.description, item.category, item.badge].filter(Boolean).join(' ').toLowerCase();
+      const inCategory = active === '全部' || item._categories.includes(active);
+      const text = [item.title, item.description, ...item._categories, item.badge].filter(Boolean).join(' ').toLowerCase();
       return inCategory && (!q || text.includes(q));
     });
   }
@@ -81,7 +92,7 @@
           <div class="card-copy">
             <div class="card-title-row"><h3 class="card-title">${escapeHtml(item.title || 'Untitled')}</h3>${badge}</div>
             <p class="card-description">${escapeHtml(item.description || '点击打开服务')}</p>
-            <div class="card-category">${escapeHtml(item.category || '未分类')}</div>
+            <div class="card-category">${escapeHtml(item._categories.length ? item._categories.join(' · ') : '未分类')}</div>
           </div>
         </a>`;
     }).join('');
