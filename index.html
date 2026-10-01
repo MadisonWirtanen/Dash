@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Dash - 一个简洁现代的个人服务导航站" />
+  <title>Dash</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="shell">
+    <header class="hero">
+      <div class="brand-wrap">
+        <div class="logo" aria-hidden="true">D</div>
+        <div>
+          <div class="eyebrow">PERSONAL DASHBOARD</div>
+          <h1 id="site-title">Dash</h1>
+          <p id="site-description">把常用服务放在一个安静、好找的地方。</p>
+        </div>
+      </div>
+
+      <button id="theme-toggle" class="icon-button" type="button" aria-label="切换主题" title="切换主题">
+        <span class="theme-icon" aria-hidden="true">◐</span>
+      </button>
+    </header>
+
+    <section class="toolbar" aria-label="筛选工具">
+      <label class="search-box" for="search-input">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+        <input id="search-input" type="search" placeholder="搜索服务、说明或分类…" autocomplete="off" />
+        <kbd>/</kbd>
+      </label>
+      <div id="category-list" class="category-list" aria-label="分类"></div>
+    </section>
+
+    <section class="content-head">
+      <div>
+        <h2 id="section-title">全部服务</h2>
+        <p id="result-count">0 个入口</p>
+      </div>
+      <p class="hint">点击卡片即可打开对应服务</p>
+    </section>
+
+    <section id="card-grid" class="card-grid" aria-live="polite"></section>
+
+    <section id="empty-state" class="empty-state" hidden>
+      <div class="empty-icon">⌕</div>
+      <h3>没有找到匹配的服务</h3>
+      <p>换个关键词，或者切回“全部”。</p>
+    </section>
+
+    <footer>
+      <span id="footer-text">Dash · Personal Navigation</span>
+      <span>静态前端 · Cloudflare Pages</span>
+    </footer>
+  </main>
+
+  <script src="./config.js"></script>
+  <script src="./assets/app.js"></script>
+</body>
+</html>
